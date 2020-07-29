@@ -1,0 +1,10 @@
+NEI <- readRDS("summarySCC_PM25.rds")
+SCC <- readRDS("Source_Classification_Code.rds")
+NEI_Baltimore <- subset(NEI, fips == "24510")
+MV_SCC <- SCC[grep("vehicle", SCC$Short.Name, ignore.case = TRUE), ]
+SCC_MVlist <- unique(MV_SCC$SCC)
+MVNEI_Baltimore <- subset(NEI_Baltimore, SCC %in% SCC_MVlist)
+totalPM_MV <- with(MVNEI_Baltimore, tapply(Emissions, year, sum, na.rm=TRUE))
+png("plot5.png", height = 480, width = 480)
+barplot(totalPM_MV, main = "Total PM2.5 emissions from motor vehicles yearwise in Baltimore City", xlab = "year", ylab = "Total PM2.5 Emission")
+dev.off()
